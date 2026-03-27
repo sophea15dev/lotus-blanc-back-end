@@ -1,12 +1,12 @@
 import swaggerJsdoc from "swagger-jsdoc";
 
-const options: swaggerJsdoc.Options = {
+const options = {
   definition: {
     openapi: "3.0.0",
     info: {
-      title: "Lotus API",
+      title: "Lotus Blanc API",
       version: "1.0.0",
-      description: "API documentation",
+      description: "Restaurant Management API documentation",
     },
     servers: [
       {
@@ -14,7 +14,8 @@ const options: swaggerJsdoc.Options = {
       },
     ],
   },
-  apis: ["./src/routes/*.ts"],
+  // CRITICAL: Point this to where your routes are located
+  apis: ["./src/routes/*.ts", "./dist/routes/*.js"], 
 };
 
 const swaggerSpec = swaggerJsdoc(options);
