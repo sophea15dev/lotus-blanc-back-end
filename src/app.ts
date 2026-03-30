@@ -6,6 +6,7 @@ import swaggerUi from "swagger-ui-express";
 import swaggerSpec from "./config/swagger"; 
 import userRoutes from "./routes/user.routes";
 import reservationRoutes from "./routes/reservation"; 
+import orderRoutes from "./routes/order"; 
 
 const app: Application = express();
 
@@ -27,5 +28,5 @@ app.get("/", (req: Request, res: Response) => {
 // API Routes
 app.use("/api/users", userRoutes);
 app.use("/api/reservations", reservationRoutes);
-
+app.use("/api/orders", orderRoutes);
 export default app;
