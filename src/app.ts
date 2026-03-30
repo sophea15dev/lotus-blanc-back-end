@@ -2,8 +2,10 @@ import express, { Application, Request, Response } from "express";
 import cors from "cors";
 import swaggerUi from "swagger-ui-express";
 
-import swaggerSpec from "../src/config/swagger";
+// Corrected import path based on your folder structure
+import swaggerSpec from "./config/swagger"; 
 import userRoutes from "./routes/user.routes";
+import reservationRoutes from "./routes/reservation"; 
 
 const app: Application = express();
 
@@ -11,21 +13,19 @@ const app: Application = express();
 app.use(cors());
 app.use(express.json());
 
-// Root Route - Updated to show new admin endpoints
+// Swagger Documentation - Serve this BEFORE the routes
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+// Root Route
 app.get("/", (req: Request, res: Response) => {
   res.status(200).json({
+    message: "Welcome to Lotus Blanc API",
     documentation: "/api-docs",
-    endpoints: {
-      users: "/api/users",
-      admin: "/api/admin" // 2. Add to your status map
-    }
   });
 });
 
-// Swagger Documentation
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
 // API Routes
 app.use("/api/users", userRoutes);
+app.use("/api/reservations", reservationRoutes);
 
 export default app;

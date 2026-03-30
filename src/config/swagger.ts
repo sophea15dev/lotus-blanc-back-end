@@ -11,11 +11,12 @@ const options = {
     servers: [
       {
         url: "http://localhost:8000",
+        description: "Development server",
       },
     ],
   },
-  // CRITICAL: Point this to where your routes are located
-  apis: ["./src/routes/*.ts", "./dist/routes/*.js"], 
+  // Ensure these paths point correctly to your src folder
+  apis: ["./src/routes/*.ts", "./src/routes/**/*.ts"], 
 };
 
 const swaggerSpec = swaggerJsdoc(options);
