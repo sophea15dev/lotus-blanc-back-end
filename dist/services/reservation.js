@@ -18,11 +18,12 @@ exports.reservationService = {
         const newRes = {
             reservation_id: reservations.length + 1,
             user_id: data.user_id,
+            adults: data.adults,
+            children: data.children,
             date: data.date,
             time: data.time,
-            number_of_guests: data.number_of_guests,
-            occasion: data.occasion || false,
-            note: data.note || "",
+            occasion: data.occasion,
+            instruction: data.instruction,
             status: 'pending'
         };
         reservations.push(newRes);
@@ -31,5 +32,26 @@ exports.reservationService = {
     // Logic to fetch all records
     findAll: () => __awaiter(void 0, void 0, void 0, function* () {
         return reservations;
+    }),
+    // Logic to find a record by ID
+    findById: (id) => __awaiter(void 0, void 0, void 0, function* () {
+        const reservation = reservations.find(res => res.reservation_id === id);
+        return reservation || null;
+    }),
+    // Logic to update a record
+    update: (id, data) => __awaiter(void 0, void 0, void 0, function* () {
+        const index = reservations.findIndex(res => res.reservation_id === id);
+        if (index === -1)
+            return null;
+        reservations[index] = Object.assign(Object.assign({}, reservations[index]), data);
+        return reservations[index];
+    }),
+    // Logic to delete a record
+    delete: (id) => __awaiter(void 0, void 0, void 0, function* () {
+        const index = reservations.findIndex(res => res.reservation_id === id);
+        if (index === -1)
+            return false;
+        reservations.splice(index, 1);
+        return true;
     })
 };

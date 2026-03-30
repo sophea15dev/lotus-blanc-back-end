@@ -47,4 +47,7 @@ router.get('/', reservation_1.getAllReservations);
  *         description: Reservation created
  */
 router.post('/', reservation_1.createReservation);
+router.get('/:id', reservation_1.getReservationById);
+router.put('/:id', reservation_1.updateReservation);
+router.delete('/:id', reservation_1.deleteReservation);
 exports.default = router;
