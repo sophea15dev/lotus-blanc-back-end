@@ -3,10 +3,10 @@ import cors from "cors";
 import swaggerUi from "swagger-ui-express";
 
 // Corrected import path based on your folder structure
-import swaggerSpec from "./config/swagger"; 
+import swaggerSpec from "./config/swagger";
 import userRoutes from "./routes/user.routes";
-import reservationRoutes from "./routes/reservation"; 
-import orderRoutes from "./routes/order"; 
+import reservationRoutes from "./routes/reservation";
+import orderRoutes from "./routes/order";
 
 const app: Application = express();
 
