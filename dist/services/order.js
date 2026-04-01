@@ -10,26 +10,53 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.orderService = void 0;
+// Simulated Database
 let orders = [];
 let orderItems = [];
 exports.orderService = {
-    createOrder: (orderData, items) => __awaiter(void 0, void 0, void 0, function* () {
+    create: (userId, items) => __awaiter(void 0, void 0, void 0, function* () {
+        // 1. Logic: Calculate Total Price from all items
+        const calculatedTotal = items.reduce((sum, item) => {
+            return sum + (item.price * item.quantity);
+        }, 0);
+        // 2. Logic: Create the Order Header
         const newOrder = {
             order_id: orders.length + 1,
-            user_id: orderData.user_id,
-            total_price: orderData.total_price || 0,
+            user_id: userId,
+            total_price: calculatedTotal,
             status: 'pending',
             created_at: new Date()
         };
+        // 3. Logic: Map Items to the new Order ID and save them
+        const processedItems = items.map((item, index) => (Object.assign(Object.assign({}, item), { order_item_id: orderItems.length + index + 1, order_id: newOrder.order_id })));
         orders.push(newOrder);
-        // Map items to this order
-        const newItems = items.map((item, index) => (Object.assign(Object.assign({}, item), { order_item_id: orderItems.length + index + 1, order_id: newOrder.order_id })));
-        orderItems.push(...newItems);
-        return { order: newOrder, items: newItems };
+        orderItems.push(...processedItems);
+        // Return the Order with its items nested
+        return Object.assign(Object.assign({}, newOrder), { items: processedItems });
     }),
-    getOrderById: (id) => __awaiter(void 0, void 0, void 0, function* () {
+    getAll: () => __awaiter(void 0, void 0, void 0, function* () { return orders; }),
+    getById: (id) => __awaiter(void 0, void 0, void 0, function* () {
         const order = orders.find(o => o.order_id === id);
+        if (!order)
+            return null;
+        // Logic: Fetch associated items for this specific order
         const items = orderItems.filter(oi => oi.order_id === id);
-        return order ? Object.assign(Object.assign({}, order), { items }) : null;
+        return Object.assign(Object.assign({}, order), { items });
+    }),
+    update: (id, updateData) => __awaiter(void 0, void 0, void 0, function* () {
+        const orderIndex = orders.findIndex(o => o.order_id === id);
+        if (orderIndex === -1)
+            return null;
+        orders[orderIndex] = Object.assign(Object.assign({}, orders[orderIndex]), updateData);
+        return orders[orderIndex];
+    }),
+    delete: (id) => __awaiter(void 0, void 0, void 0, function* () {
+        const orderIndex = orders.findIndex(o => o.order_id === id);
+        if (orderIndex === -1)
+            return false;
+        // Also delete associated order items
+        orderItems = orderItems.filter(oi => oi.order_id !== id);
+        orders.splice(orderIndex, 1);
+        return true;
     })
 };
