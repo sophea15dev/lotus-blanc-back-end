@@ -4,8 +4,8 @@ import { authUtils } from '../utils/auth';
 const mockAdmins = [
     { 
         admin_id: 1, 
-        email: "admin@lotus.com", 
-        password: "$2b$10$76/yB8L.X8R9D5p6k7j8u.eF1G2H3I4J5K6L7M8N9O0P1Q2R3S4T5" // 'password123' hashed
+        email: "lotusblanc@email.com", 
+        password: "$2b$10$NhczuX4bRgRRRvh9Ob/1sOVZbnG010AikmHmcAgjMB90/zD23VItm" // '123123' hashed
     }
 ];
 

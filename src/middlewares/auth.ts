@@ -9,7 +9,12 @@ export const authenticateAdmin = (req: Request, res: Response, next: NextFunctio
     }
 
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'lotus_blanc_secret_2026');
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'lotus_blanc_secret_2026') as any;
+
+        if (!decoded || decoded.role !== 'admin') {
+            return res.status(403).json({ message: 'Admin role required' });
+        }
+
         (req as any).admin = decoded;
         next();
     } catch (err) {
