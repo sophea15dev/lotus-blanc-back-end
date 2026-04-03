@@ -13,6 +13,9 @@ const authenticateAdmin = (req, res, next) => {
     }
     try {
         const decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET || 'lotus_blanc_secret_2026');
+        if (!decoded || decoded.role !== 'admin') {
+            return res.status(403).json({ message: 'Admin role required' });
+        }
         req.admin = decoded;
         next();
     }

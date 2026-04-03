@@ -2,19 +2,26 @@ import express, { Application, Request, Response } from "express";
 import cors from "cors";
 import swaggerUi from "swagger-ui-express";
 
-import swaggerSpec from "./config/swagger"; 
+import swaggerSpec from "./config/swagger";
 import userRoutes from "./routes/user.routes";
-import reservationRoutes from "./routes/reservation"; 
-import orderRoutes from "./routes/order"; 
+import reservationRoutes from "./routes/reservation";
+import orderRoutes from "./routes/order";
 // --- NEW IMPORTS ---
 import authRoutes from "./routes/auth";
 import dashboardRoutes from "./routes/dashboard";
-import { authenticateAdmin } from "./middlewares/auth"; 
+import { authenticateAdmin } from "./middlewares/auth";
 
 const app: Application = express();
 
+// ✅ CORS FIRST
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  }),
+);
+
 // Middleware
-app.use(cors());
 app.use(express.json());
 
 // Swagger

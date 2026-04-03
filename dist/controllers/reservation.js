@@ -78,7 +78,11 @@ const createReservation = (req, res) => __awaiter(void 0, void 0, void 0, functi
             !time ||
             !occasion ||
             !instruction) {
-            return res.status(400).json({ error: "Please fill all required fields (adults, children, date, time, occasion, instruction)." });
+            return res
+                .status(400)
+                .json({
+                error: "Please fill all required fields (adults, children, date, time, occasion, instruction).",
+            });
         }
         const result = yield reservation_1.reservationService.create(req.body);
         res.status(201).json(result);
@@ -178,7 +182,11 @@ const updateReservation = (req, res) => __awaiter(void 0, void 0, void 0, functi
             !time ||
             !occasion ||
             !instruction) {
-            return res.status(400).json({ error: "Please fill all required fields (adults, children, date, time, occasion, instruction)." });
+            return res
+                .status(400)
+                .json({
+                error: "Please fill all required fields (adults, children, date, time, occasion, instruction).",
+            });
         }
         const result = yield reservation_1.reservationService.update(Number(id), req.body);
         if (!result) {

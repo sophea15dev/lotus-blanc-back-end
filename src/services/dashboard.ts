@@ -1,47 +1,12 @@
-import { orderService } from './order';
-import { reservationService } from './reservation';
+import { orderService } from "./order";
+import { reservationService } from "./reservation";
+import { buildDashboardMetrics, DashboardMetrics } from "../models/dashboard";
 
 export const dashboardService = {
-  getMetrics: async () => {
+  getMetrics: async (): Promise<DashboardMetrics> => {
     const orders = await orderService.getAll();
     const reservations = await reservationService.findAll();
 
-    const revenue = orders.reduce((sum, order) => sum + order.total_price, 0);
-    const totalGuests = reservations.reduce((sum, reservation) => sum + reservation.adults + reservation.children, 0);
-    const totalOrders = orders.length;
-    const cancelledOrders = orders.filter((order) => order.status === 'cancelled').length;
-    const cancelledReservations = reservations.filter((res) => res.status === 'cancelled').length;
-
-    const today = new Date();
-    const yyyy = today.getFullYear();
-    const mm = String(today.getMonth() + 1).padStart(2, '0');
-    const dd = String(today.getDate()).padStart(2, '0');
-    const todayKey = `${yyyy}-${mm}-${dd}`;
-
-    const todaysSchedule = reservations
-      .filter((reservation) => reservation.date === todayKey)
-      .sort((a, b) => a.time.localeCompare(b.time))
-      .map((reservation) => ({
-        reservation_id: reservation.reservation_id,
-        user_id: reservation.user_id,
-        date: reservation.date,
-        time: reservation.time,
-        adults: reservation.adults,
-        children: reservation.children,
-        guests: reservation.adults + reservation.children,
-        occasion: reservation.occasion,
-        status: reservation.status,
-        instruction: reservation.instruction,
-      }));
-
-    return {
-      revenue,
-      totalGuests,
-      totalOrders,
-      cancelled: cancelledOrders + cancelledReservations,
-      cancelledOrders,
-      cancelledReservations,
-      todaysSchedule,
-    };
+    return buildDashboardMetrics(orders, reservations);
   },
 };

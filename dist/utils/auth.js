@@ -13,20 +13,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.authUtils = void 0;
-const bcrypt_1 = __importDefault(require("bcrypt"));
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const JWT_SECRET = process.env.JWT_SECRET || 'lotus_blanc_secret_2026';
+const JWT_SECRET = process.env.JWT_SECRET || "lotus_blanc_secret_2026";
 exports.authUtils = {
     // Encrypt password before saving to DB
     hashPassword: (password) => __awaiter(void 0, void 0, void 0, function* () {
-        return yield bcrypt_1.default.hash(password, 10);
+        return yield bcryptjs_1.default.hash(password, 10);
     }),
     // Compare login password with DB hash
     comparePassword: (password, hash) => __awaiter(void 0, void 0, void 0, function* () {
-        return yield bcrypt_1.default.compare(password, hash);
+        return yield bcryptjs_1.default.compare(password, hash);
     }),
     // Create a token for the dashboard
     generateToken: (adminId) => {
-        return jsonwebtoken_1.default.sign({ id: adminId, role: 'admin' }, JWT_SECRET, { expiresIn: '1d' });
-    }
+        return jsonwebtoken_1.default.sign({ id: adminId, role: "admin" }, JWT_SECRET, {
+            expiresIn: "1d",
+        });
+    },
 };

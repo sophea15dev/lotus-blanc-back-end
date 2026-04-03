@@ -1,5 +1,5 @@
-import { Request, Response } from 'express';
-import { reservationService } from '../services/reservation';
+import { Request, Response } from "express";
+import { reservationService } from "../services/reservation";
 
 /**
  * @swagger
@@ -59,27 +59,33 @@ import { reservationService } from '../services/reservation';
  *         description: Missing required fields
  */
 export const createReservation = async (req: Request, res: Response) => {
-    try {
-        const { user_id, adults, children, date, time, occasion, instruction } = req.body;
+  try {
+    const { user_id, adults, children, date, time, occasion, instruction } =
+      req.body;
 
-        // Validation Logic
-        if (
-            !user_id ||
-            adults === undefined ||
-            children === undefined ||
-            !date ||
-            !time ||
-            !occasion ||
-            !instruction
-        ) {
-            return res.status(400).json({ error: "Please fill all required fields (adults, children, date, time, occasion, instruction)." });
-        }
-
-        const result = await reservationService.create(req.body);
-        res.status(201).json(result);
-    } catch (error) {
-        res.status(500).json({ error: "Internal Server Error" });
+    // Validation Logic
+    if (
+      !user_id ||
+      adults === undefined ||
+      children === undefined ||
+      !date ||
+      !time ||
+      !occasion ||
+      !instruction
+    ) {
+      return res
+        .status(400)
+        .json({
+          error:
+            "Please fill all required fields (adults, children, date, time, occasion, instruction).",
+        });
     }
+
+    const result = await reservationService.create(req.body);
+    res.status(201).json(result);
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 };
 
 /**
@@ -94,8 +100,8 @@ export const createReservation = async (req: Request, res: Response) => {
  *         description: List of all reservations
  */
 export const getAllReservations = async (_req: Request, res: Response) => {
-    const data = await reservationService.findAll();
-    res.status(200).json(data);
+  const data = await reservationService.findAll();
+  res.status(200).json(data);
 };
 
 /**
@@ -119,16 +125,16 @@ export const getAllReservations = async (_req: Request, res: Response) => {
  *         description: Reservation not found
  */
 export const getReservationById = async (req: Request, res: Response) => {
-    try {
-        const { id } = req.params;
-        const data = await reservationService.findById(Number(id));
-        if (!data) {
-            return res.status(404).json({ error: "Reservation not found" });
-        }
-        res.status(200).json(data);
-    } catch (error) {
-        res.status(500).json({ error: "Internal Server Error" });
+  try {
+    const { id } = req.params;
+    const data = await reservationService.findById(Number(id));
+    if (!data) {
+      return res.status(404).json({ error: "Reservation not found" });
     }
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 };
 
 /**
@@ -160,31 +166,37 @@ export const getReservationById = async (req: Request, res: Response) => {
  *         description: Missing required fields
  */
 export const updateReservation = async (req: Request, res: Response) => {
-    try {
-        const { id } = req.params;
-        const { user_id, adults, children, date, time, occasion, instruction } = req.body;
+  try {
+    const { id } = req.params;
+    const { user_id, adults, children, date, time, occasion, instruction } =
+      req.body;
 
-        // Validation Logic
-        if (
-            !user_id ||
-            adults === undefined ||
-            children === undefined ||
-            !date ||
-            !time ||
-            !occasion ||
-            !instruction
-        ) {
-            return res.status(400).json({ error: "Please fill all required fields (adults, children, date, time, occasion, instruction)." });
-        }
-
-        const result = await reservationService.update(Number(id), req.body);
-        if (!result) {
-            return res.status(404).json({ error: "Reservation not found" });
-        }
-        res.status(200).json(result);
-    } catch (error) {
-        res.status(500).json({ error: "Internal Server Error" });
+    // Validation Logic
+    if (
+      !user_id ||
+      adults === undefined ||
+      children === undefined ||
+      !date ||
+      !time ||
+      !occasion ||
+      !instruction
+    ) {
+      return res
+        .status(400)
+        .json({
+          error:
+            "Please fill all required fields (adults, children, date, time, occasion, instruction).",
+        });
     }
+
+    const result = await reservationService.update(Number(id), req.body);
+    if (!result) {
+      return res.status(404).json({ error: "Reservation not found" });
+    }
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 };
 
 /**
@@ -208,14 +220,14 @@ export const updateReservation = async (req: Request, res: Response) => {
  *         description: Reservation not found
  */
 export const deleteReservation = async (req: Request, res: Response) => {
-    try {
-        const { id } = req.params;
-        const result = await reservationService.delete(Number(id));
-        if (!result) {
-            return res.status(404).json({ error: "Reservation not found" });
-        }
-        res.status(200).json({ message: "Reservation deleted successfully" });
-    } catch (error) {
-        res.status(500).json({ error: "Internal Server Error" });
+  try {
+    const { id } = req.params;
+    const result = await reservationService.delete(Number(id));
+    if (!result) {
+      return res.status(404).json({ error: "Reservation not found" });
     }
+    res.status(200).json({ message: "Reservation deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 };
