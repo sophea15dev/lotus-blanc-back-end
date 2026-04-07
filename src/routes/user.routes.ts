@@ -1,15 +1,30 @@
 import { Router } from "express";
+import * as userController from "../controllers/user.controller";
 
 const router = Router();
 
-// This handles GET http://localhost:8000/api/users
-router.get("/", (req, res) => {
-  res.json({ message: "List of users fetched successfully" });
-});
-
-// This handles POST http://localhost:8000/api/users
-router.post("/", (req, res) => {
-  res.json({ message: "User created" });
-});
+/**
+ * @swagger
+ * /api/users:
+ *   get:
+ *     summary: Retrieve a list of users
+ *     tags:
+ *       - Users
+ *     responses:
+ *       200:
+ *         description: A list of users
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: string
+ *                   name:
+ *                     type: string
+ */
+router.get("/", userController.getUsers);
 
 export default router;
