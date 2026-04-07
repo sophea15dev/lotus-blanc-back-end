@@ -3,17 +3,13 @@ import cors from "cors";
 import swaggerUi from "swagger-ui-express";
 import swaggerJsDoc from "swagger-jsdoc";
 
-// Import Routes
 import reservationRoutes from "./routes/reservation";
 import orderRoutes from "./routes/order";
 import authRoutes from "./routes/auth";
 import dashboardRoutes from "./routes/dashboard";
 import menuRoutes from "./routes/menu";
-
-// Middleware
 import { authenticateAdmin } from "./middlewares/auth";
 
-// ✅ Swagger Configuration (FIXED WITH JWT)
 const swaggerOptions = {
   definition: {
     openapi: "3.0.0",
@@ -22,14 +18,7 @@ const swaggerOptions = {
       version: "1.0.0",
       description: "Lotus Restaurant Backend API",
     },
-    servers: [
-      {
-        url: "http://localhost:8001",
-        description: "Development server",
-      },
-    ],
-
-    // 🔥 ADD THIS PART (VERY IMPORTANT)
+    servers: [{ url: "http://localhost:8001", description: "Development server" }],
     components: {
       securitySchemes: {
         bearerAuth: {
@@ -39,54 +28,33 @@ const swaggerOptions = {
         },
       },
     },
-
-    security: [
-      {
-        bearerAuth: [],
-      },
-    ],
+    security: [{ bearerAuth: [] }],
   },
-
-  apis: [
-    "./src/routes/*.ts",
-    "./src/controllers/*.ts",
-    "./src/**/*.ts",
-  ],
+  // Ensure this ONLY points to files with correct swagger comments
+  apis: ["./src/routes/*.ts", "./src/controllers/*.ts"],
 };
 
 const swaggerSpec = swaggerJsDoc(swaggerOptions);
-
 const app: Application = express();
 
-// CORS Configuration
-const corsOptions = {
+app.use(cors({
   origin: ["http://localhost:5173", "http://localhost:8001"],
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
-};
+}));
 
-app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Swagger UI
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-// Root Route
-app.get("/", (req: Request, res: Response) => {
-  res.status(200).json({
-    message: "Welcome to Lotus Blanc API",
-    documentation: "/api-docs",
-  });
-});
-
-// ====================== PUBLIC ROUTES ======================
+// Public
 app.use("/api/auth", authRoutes);
 app.use("/api/reservations", reservationRoutes);
 app.use("/api/orders", orderRoutes);
 
-// ====================== ADMIN PROTECTED ROUTES ======================
+// Protected
 app.use("/api/dashboard", authenticateAdmin, dashboardRoutes);
 app.use("/api/admin/menu", authenticateAdmin, menuRoutes);
 

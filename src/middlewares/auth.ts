@@ -1,42 +1,26 @@
-// src/middlewares/authenticateAdmin.ts
-import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
+import { Request, Response, NextFunction } from "express";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
 
-interface AdminRequest extends Request {
-  admin?: any;
-}
+dotenv.config();
 
-export const authenticateAdmin = (req: AdminRequest, res: Response, next: NextFunction) => {
+export const authenticateAdmin = (req: Request, res: Response, next: NextFunction) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) return res.status(401).json({ message: "No token provided" });
+
+  const token = authHeader.split(" ")[1];
+  if (!token) return res.status(401).json({ message: "No token provided" });
+
   try {
-    const authHeader = req.headers.authorization;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as any;
 
-    if (!authHeader) {
-      return res.status(401).json({ message: "No token provided" });
+    if (decoded.role !== "admin") {
+      return res.status(403).json({ message: "Access denied" });
     }
 
-    const parts = authHeader.split(' ');
-    if (parts.length !== 2 || parts[0] !== 'Bearer') {
-      return res.status(401).json({ message: "Token format invalid" });
-    }
-
-    const token = parts[1];
-    const secret = process.env.JWT_SECRET || 'lotus_blanc_secret_2026';
-
-    let decoded: any;
-    try {
-      decoded = jwt.verify(token, secret);
-    } catch (err: any) {
-      return res.status(401).json({ message: "Invalid or expired token" });
-    }
-
-    if (!decoded.role || decoded.role !== 'admin') {
-      return res.status(403).json({ message: "Admin role required" });
-    }
-
-    req.admin = decoded;
+    (req as any).admin = decoded;
     next();
-  } catch (err: any) {
-    console.error('Authentication error:', err.message);
-    res.status(500).json({ message: "Internal server error" });
+  } catch (err) {
+    return res.status(401).json({ message: "Invalid or expired token" });
   }
 };

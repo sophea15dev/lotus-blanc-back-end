@@ -1,15 +1,14 @@
-import { Router } from 'express';
-import { login } from '../controllers/auth';
+import { Router } from "express";
+import { adminLogin } from "../controllers/auth";
 
 const router = Router();
 
 /**
  * @swagger
- * /api/auth/login:
+ * /api/auth/admin-login:
  *   post:
  *     summary: Admin login
- *     tags:
- *       - Auth
+ *     description: Login only allowed for the admin account
  *     requestBody:
  *       required: true
  *       content:
@@ -19,18 +18,27 @@ const router = Router();
  *             properties:
  *               email:
  *                 type: string
+ *                 example: admin@lotus.com
  *               password:
  *                 type: string
+ *                 example: 123123
  *     responses:
  *       200:
- *         description: Login successful with token
+ *         description: Admin login successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 token:
+ *                   type: string
  *       400:
- *         description: Missing email or password
+ *         description: Email and password required
  *       401:
- *         description: Invalid credentials
- *       500:
- *         description: Server error
+ *         description: Invalid admin credentials
  */
-router.post('/login', login);
+router.post("/admin-login", adminLogin);
 
 export default router;

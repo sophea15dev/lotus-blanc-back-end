@@ -1,3 +1,4 @@
+// src/index.ts
 import app from "./app";
 import dotenv from "dotenv";
 
@@ -11,12 +12,12 @@ const startServer = (port: number) => {
     console.log(`📖 Docs available at http://localhost:${port}/api-docs`);
   });
 
-  server.on('error', (err: any) => {
-    if (err.code === 'EADDRINUSE') {
+  server.on("error", (err: any) => {
+    if (err.code === "EADDRINUSE") {
       console.warn(`⚠️ Port ${port} in use, trying ${port + 1}...`);
       startServer(port + 1);
     } else {
-      console.error('Server error:', err);
+      console.error("Server error:", err);
       process.exit(1);
     }
   });
