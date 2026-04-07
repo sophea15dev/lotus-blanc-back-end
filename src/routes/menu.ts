@@ -7,18 +7,19 @@ import {
   deleteMenu,
   toggleMenuAvailability,
 } from '../controllers/menu';
-
 import { authenticateAdmin } from '../middlewares/auth';
 import { upload } from '../middlewares/upload';
 
 const router = Router();
 
+// Apply admin authentication to all routes
 router.use(authenticateAdmin);
 
-router.post('/', upload.single('image'), createMenu);
-router.get('/', getAllMenus);
-router.put('/:id', upload.single('image'), updateMenu);
-router.delete('/:id', deleteMenu);
-router.patch('/:id/toggle', toggleMenuAvailability);   // ← Open / Close button
+// Menu routes
+router.post('/', upload.single('image'), createMenu);          // Create menu
+router.get('/', getAllMenus);                                  // Get all menus
+router.put('/:id', upload.single('image'), updateMenu);       // Update menu
+router.delete('/:id', deleteMenu);                             // Delete menu
+router.patch('/:id/toggle', toggleMenuAvailability);          // Open/Close menu
 
 export default router;

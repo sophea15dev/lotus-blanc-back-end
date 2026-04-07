@@ -4,16 +4,16 @@ import swaggerUi from "swagger-ui-express";
 import swaggerJsDoc from "swagger-jsdoc";
 
 // Import Routes
-import userRoutes from "./routes/user.routes";
 import reservationRoutes from "./routes/reservation";
 import orderRoutes from "./routes/order";
 import authRoutes from "./routes/auth";
 import dashboardRoutes from "./routes/dashboard";
-import menuRoutes from "./routes/menu";        // ← NEW: Add this line
+import menuRoutes from "./routes/menu";
 
+// Middleware
 import { authenticateAdmin } from "./middlewares/auth";
 
-// ✅ IMPROVED Swagger Configuration
+// ✅ Swagger Configuration (FIXED WITH JWT)
 const swaggerOptions = {
   definition: {
     openapi: "3.0.0",
@@ -24,15 +24,33 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: "http://localhost:8000",
+        url: "http://localhost:8001",
         description: "Development server",
       },
     ],
+
+    // 🔥 ADD THIS PART (VERY IMPORTANT)
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+        },
+      },
+    },
+
+    security: [
+      {
+        bearerAuth: [],
+      },
+    ],
   },
+
   apis: [
     "./src/routes/*.ts",
-    "./src/routes/**/*.ts",
-    "./src/**/*.ts",        // This will also scan menu.controller.ts for comments later
+    "./src/controllers/*.ts",
+    "./src/**/*.ts",
   ],
 };
 
@@ -42,9 +60,9 @@ const app: Application = express();
 
 // CORS Configuration
 const corsOptions = {
-  origin: "http://localhost:5173",
+  origin: ["http://localhost:5173", "http://localhost:8001"],
   credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
 };
 
@@ -65,14 +83,11 @@ app.get("/", (req: Request, res: Response) => {
 
 // ====================== PUBLIC ROUTES ======================
 app.use("/api/auth", authRoutes);
-app.use("/api/users", userRoutes);
 app.use("/api/reservations", reservationRoutes);
 app.use("/api/orders", orderRoutes);
 
 // ====================== ADMIN PROTECTED ROUTES ======================
 app.use("/api/dashboard", authenticateAdmin, dashboardRoutes);
-
-// ✅ NEW: Menu Routes (Protected by authenticateAdmin)
-app.use("/api/admin/menu", authenticateAdmin, menuRoutes);   // ← Added here
+app.use("/api/admin/menu", authenticateAdmin, menuRoutes);
 
 export default app;
